@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>UPI QR Code Generator | upay.fit</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      margin: 0;
+      padding: 0;
+      background-color: #007BFF;
+      color: white;
+    }
+    .container {
+      padding: 20px;
+      max-width: 500px;
+      margin: auto;
+    }
+    input, button, select {
+      padding: 12px;
+      font-size: 16px;
+      margin-top: 10px;
+      width: 100%;
+      border: none;
+      border-radius: 6px;
+      box-sizing: border-box;
+    }
+    input, select {
+      margin-bottom: 10px;
+    }
+    button {
+      background-color: #ffffff;
+      color: #007BFF;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    canvas {
+      margin-top: 20px;
+      background-color: white;
+      padding: 10px;
+      border-radius: 8px;
+    }
+    a.download-link {
+      display: block;
+      margin-top: 15px;
+      color: #ffffff;
+      text-decoration: underline;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>QR Code Generator</h2>
+
+    <select id="preset" onchange="setPreset()">
+      <option value="">-- Select UPI ID --</option>
+      <option value="upi://pay?pa=8400096399@okbizaxis&pn=UPAY">8400096399@okbizaxis</option>
+      <option value="upi://pay?pa=8400096399@axl&pn=UPAY">8400096399@axl</option>
+    </select>
+
+    <input type="text" id="text" placeholder="Or enter custom text/UPI/URL" />
+    <button onclick="generateQR()">Generate QR Code</button>
+
+    <div id="qrcode"></div>
+    <a id="downloadLink" class="download-link" style="display: none;" download="qrcode.png">Download QR Code</a>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
+  <script>
+    function setPreset() {
+      const preset = document.getElementById("preset").value;
+      document.getElementById("text").value = preset;
+    }
+
+    function generateQR() {
+      const text = document.getElementById("text").value.trim();
+      const container = document.getElementById("qrcode");
+      const downloadLink = document.getElementById("downloadLink");
+
+      container.innerHTML = "";
+      downloadLink.style.display = "none";
+
+      if (text) {
+        const canvas = document.createElement("canvas");
+        QRCode.toCanvas(canvas, text, { width: 250 }, function (err) {
+          if (err) return console.error(err);
+          container.appendChild(canvas);
+
+          // Generate download link
+          const dataUrl = canvas.toDataURL("image/png");
+          downloadLink.href = dataUrl;
+          downloadLink.style.display = "block";
+        });
+      }
+    }
+  </script>
+</body>
+</html>
